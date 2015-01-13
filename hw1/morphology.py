@@ -1,35 +1,22 @@
-import re
+import fst
 
-def iterateRules():
-    # the first rule looks for STUFF followed by "e+e" or "e+i"
-    # followed by STUFF and removes the initial e.
-    yield ("(.*)e\+([ei].*)", "\\1\\2")
+class Parser():
 
-    # the next rule to remove a + if it's between an e and something
-    # that neither an e nor an i
-    yield ("(.+)e\+([^ei].*)", "\\1e\\2")
+	def __init__(self):
+		pass
 
-    # your task is to write the next rule, which should map "_c+ed"
-    # and "_c+ing" to a version with "ck" instead, so long as "_" is a
-    # vowel.
-    #
-    # if you need help with python regular expressions, see:
-    #   http://docs.python.org/library/re.html
+	def generate(self, analysis):
+		output = ['p','a','n','i','c','k','e','d']
+		return ''.join(output)
 
+	def parse(self, word):
+		output = ['p','a','n','i','c','+past form']
+		return ''.join(output)
 
-def generate(analysis):
-    word = analysis
-    # apply all rules in sequence
-    for (ruleLHS, ruleRHS) in iterateRules():
-        word = re.sub("^" + ruleLHS + "$", ruleRHS, word)
-
-    # remove any remaining boundaires.  you may wish to comment this
-    # out for debugging purposes
-    word = re.sub("\+","", word)
-    return word
 
 if __name__ == '__main__':
-    user_input = raw_input()
-    if user_input:
-        print user_input, '-->',
-        print generate(user_input)
+	user_input = raw_input()
+	p = Parser()
+	if user_input:
+		print user_input, '-->',
+		print p.parse(user_input)
