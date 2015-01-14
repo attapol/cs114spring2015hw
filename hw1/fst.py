@@ -936,7 +936,37 @@ class FST(object):
             yield 'fail', None
 
     def transduce(self, input):
-        return self.step_transduce(input, step=False).next()[1]
+        """Transduce the input through the FST
+
+        This does not support epsilon input
+        """
+        input = tuple(input)
+        output_list = []
+        output = []
+        in_pos = 0
+
+        frontier = []
+        state = self.initial_state
+
+        while True:
+            if self.is_final(state) and in_pos == len(input):
+                output_list.append(output)
+            else:
+                arcs = self.outgoing(state)
+                for arc in arcs:
+                    in_string = self.in_string(arc) # a tuple
+                    if tuple(input[in_pos]) == in_string:
+                        frontier.append( (arc, in_pos, len(output)) )
+            if len(frontier) == 0:
+                break
+            arc, in_pos, out_pos = frontier.pop()
+            state = self.dst(arc)
+            assert out_pos <= len(output)
+            in_pos = in_pos + 1 
+            output = output[:out_pos]
+			# Convert character tuple back into string
+            output.append(''.join(self.out_string(arc)))
+        return output_list
 
     def step_transduce(self, input, step=True):
         """

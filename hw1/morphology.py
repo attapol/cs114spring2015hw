@@ -6,17 +6,26 @@ class Parser():
 		pass
 
 	def generate(self, analysis):
+		"""Generate the morphologically correct word 
+
+		e.g.
+		p = Parser()
+		analysis = ['p','a','n','i','c','+past form']
+		p.generate(analysis) 
+		---> 'panicked'
+		"""
 		output = ['p','a','n','i','c','k','e','d']
 		return ''.join(output)
 
 	def parse(self, word):
+		"""Parse a word morphologically 
+
+		e.g.
+		p = Parser()
+		word = ['p', 'a', 'n', 'i', 'c']
+		p.parse(word)
+		---> 'panic+past form'
+		"""
 		output = ['p','a','n','i','c','+past form']
 		return ''.join(output)
 
-
-if __name__ == '__main__':
-	user_input = raw_input()
-	p = Parser()
-	if user_input:
-		print user_input, '-->',
-		print p.parse(user_input)

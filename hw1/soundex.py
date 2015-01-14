@@ -1,6 +1,5 @@
 from fst import FST
 import string, sys
-from fsmutils import composechars, trace
 
 def letters_to_numbers():
 	"""
@@ -19,10 +18,6 @@ def letters_to_numbers():
 	# Set all the final states
 	f1.set_final('next')
 
-	# Add the rest of the arcs
-	for letter in string.ascii_lowercase:
-		f1.add_arc('start', 'next', (letter), (letter))
-		f1.add_arc('next', 'next', (letter), '0')
 	return f1
 
 def truncate_to_three_digits():
@@ -39,13 +34,6 @@ def truncate_to_three_digits():
 	f2.initial_state = '1'
 	f2.set_final('1')
 
-	# Add the arcs
-	for letter in string.letters:
-		f2.add_arc('1', '1', (letter), (letter))
-
-	for n in range(10):
-		f2.add_arc('1', '1', str(n), str(n))
-
 	return f2
 
 def add_zero_padding():
@@ -58,13 +46,6 @@ def add_zero_padding():
 	f3.initial_state = '1'
 	f3.set_final('2')
 
-	for letter in string.letters:
-		f3.add_arc('1', '1', letter, letter)
-	for number in xrange(10):
-		f3.add_arc('1', '1', str(number), str(number))
-	
-	for n in range(10):
-		f3.add_arc('1', '2', (), '000')
 	return f3
 
 def soundex_convert(name_string):

@@ -41,9 +41,10 @@ class TestHW1(unittest.TestCase):
 		self.assertEqual(soundex_convert("Jurafsky"), "j612")
 
 	def test_morphology(self):
-		self.assertEqual(self.mparser.parse("lilac+ing"), "lilacking")
-		self.assertEqual(generate("lick+ed"), "licked")
-		self.assertEqual(generate("sync+ing"), "syncing")
+		havocking = [x for x in 'havocking']
+		self.assertEqual(self.mparser.parse(havocking), "havoc+present participle")
+		lick = ['l','i','c','k','+past form']
+		self.assertEqual(self.mparser.generate(lick), "licked")
 
 if __name__ == '__main__':
 	unittest.main()
