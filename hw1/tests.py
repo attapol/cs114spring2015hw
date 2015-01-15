@@ -11,11 +11,11 @@ class TestHW1(unittest.TestCase):
 		self.f3 = add_zero_padding()
 		self.mparser = Parser()
 
-	def is_phone_number(self):
+	def test_is_phone_number(self):
 		self.assertTrue(is_phone_number('153-523-1295'))
 		self.assertFalse(is_phone_number('15E-523-1295'))
 
-	def is_email_address(self):
+	def test_is_email_address(self):
 		self.assertTrue(is_email_address('tet@brandeis.edu'))
 		self.assertFalse(is_email_address('tet@brandeis'))
 		self.assertFalse(is_email_address('brandeis.edu'))
