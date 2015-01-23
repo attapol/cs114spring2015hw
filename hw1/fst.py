@@ -1218,34 +1218,3 @@ class FSMTools:
         def getval(self, identifier):
             return self._id_to_val[int(identifier)]
 
-
-if __name__ == '__main__':
-    # This is a very contrived example.  :)
-    # Something phonetic might be better.
-    fst = FST.parse("test", """
-        -> start
-        start -> vp [john:john]
-        start -> vp [mary:mary]
-
-        # Delay production of the determiner until we know the gender.
-        start -> subj_noun [the:]
-        subj_noun -> vp [dog:le chien]
-        subj_noun -> vp [cow:la vache]
-
-        vp -> obj [eats:mange]
-        obj -> obj_noun [the:]
-        obj -> obj_noun [:]
-        obj_noun -> end [grass:de l'herbe]
-        obj_noun -> end [bread:du pain]
-        end ->
-        """)
-
-    print "john eats the bread ->"
-    print '  '+ ' '.join(fst.transduce("john eats the bread".split()))
-    rev = fst.inverted()
-    print "la vache mange de l'herbe ->"
-    print '  '+' '.join(rev.transduce("la vache mange de l'herbe".split()))
-
-    demo = FSTDemo(fst)
-    demo.transduce("the cow eats the bread".split())
-    demo.mainloop()
