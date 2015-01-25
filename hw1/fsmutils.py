@@ -13,7 +13,7 @@ def compose(input, *fsts):
 	return output_list
 
 if __name__ == '__main__':
-	f1 = FST('soundex-generate')
+	f1 = FST('test-generate')
 
 	# Indicate that '1' is the initial state
 	f1.add_state('start')
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 		f1.add_arc('start', 'next', letter, '1')
 		f1.add_arc('next', 'next', letter, '0')
 
-	f2 = FST('soundex-generate')
+	f2 = FST('test-generate')
 	f2.add_state('start')
 	f2.add_state('next')
 	f2.initial_state = 'start'

@@ -140,7 +140,7 @@ class FST(object):
     considered to encode an empty mapping.  I.e., transducing any
     string with such an C{FST} will result in failure.
     """
-    def __init__(self, label):
+    def __init__(self, label='default'):
         """
         Create a new finite state transducer, containing no states.
         """
@@ -938,7 +938,8 @@ class FST(object):
     def transduce(self, input):
         """Transduce the input through the FST
 
-        This does not support epsilon input
+        This does not support epsilon input.
+		But the epsilon output can be represented as a empty string
         """
         input = tuple(input)
         output_list = []
@@ -955,16 +956,17 @@ class FST(object):
                 arcs = self.outgoing(state)
                 for arc in arcs:
                     in_string = self.in_string(arc) # a tuple
-                    if tuple(input[in_pos]) == in_string:
+                    if len(in_string) == 0 or tuple(input[in_pos]) == in_string:
                         frontier.append( (arc, in_pos, len(output)) )
             if len(frontier) == 0:
                 break
             arc, in_pos, out_pos = frontier.pop()
             state = self.dst(arc)
             assert out_pos <= len(output)
-            in_pos = in_pos + 1 
+            if len(self.in_string(arc)) > 0:
+                in_pos = in_pos + 1 
             output = output[:out_pos]
-			# Convert character tuple back into string
+            # Convert character tuple back into string
             output.append(''.join(self.out_string(arc)))
         return output_list
 
