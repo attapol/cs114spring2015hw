@@ -938,8 +938,6 @@ class FST(object):
     def transduce(self, input):
         """Transduce the input through the FST
 
-        This does not support epsilon input.
-		But the epsilon output can be represented as a empty string
         """
         input = tuple(input)
         output_list = []
