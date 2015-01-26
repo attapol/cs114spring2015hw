@@ -956,7 +956,7 @@ class FST(object):
                 arcs = self.outgoing(state)
                 for arc in arcs:
                     in_string = self.in_string(arc) # a tuple
-                    if len(in_string) == 0 or tuple(input[in_pos]) == in_string:
+                    if len(in_string) == 0 or (in_pos < len(input) and tuple(input[in_pos]) == in_string):
                         frontier.append( (arc, in_pos, len(output)) )
             if len(frontier) == 0:
                 break
@@ -965,6 +965,7 @@ class FST(object):
             assert out_pos <= len(output)
             if len(self.in_string(arc)) > 0:
                 in_pos = in_pos + 1 
+            print in_pos
             output = output[:out_pos]
             # Convert character tuple back into string
             output.append(''.join(self.out_string(arc)))
