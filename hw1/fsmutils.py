@@ -8,7 +8,8 @@ def compose(input, *fsts):
 	for fst in fsts:
 		next_output_list = []
 		for o in output_list:
-			next_output_list.extend(fst.transduce(o))
+			new_output = ''.join(o)
+			next_output_list.extend(fst.transduce(new_output))
 		output_list = next_output_list
 	return output_list
 

@@ -965,7 +965,6 @@ class FST(object):
             assert out_pos <= len(output)
             if len(self.in_string(arc)) > 0:
                 in_pos = in_pos + 1 
-            print in_pos
             output = output[:out_pos]
             # Convert character tuple back into string
             output.append(''.join(self.out_string(arc)))
