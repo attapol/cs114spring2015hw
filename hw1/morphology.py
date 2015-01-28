@@ -22,7 +22,7 @@ class Parser():
 
 		e.g.
 		p = Parser()
-		word = ['p', 'a', 'n', 'i', 'c']
+		word = ['p', 'a', 'n', 'i', 'c', 'k','e','d']
 		p.parse(word)
 		---> 'panic+past form'
 		"""
