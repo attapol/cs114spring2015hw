@@ -1,0 +1,191 @@
+\def\DevnagVersion{2.13}
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{tabularx}
+
+%@modernhindi
+
+% \date{}
+\begin{document}
+
+
+\title{CS114 (Spring 2015) Homework 5 Part Two\\ Statistical Parser: Extracting PCFG}
+\author{Due March 27, 2015}
+\date{}
+\maketitle
+\section*{Introduction}
+The starter code for this part of the homework is the same as the one from part one.  
+You can download all the code and supporting files (including this description) by updating your local github repo.
+
+
+Files you will edit and turn in:
+\begin{itemize}
+\item \verb extractGrammar.py  where you'll put your code for problem 3.
+\item \verb grammar.py  where you'll put your code for problem 2.
+\end{itemize}
+
+Your code will be autograded for technical correctness. Please do not change the names of any provided functions or classes within the code.
+
+
+\setcounter{section}{1}
+\section{Effects of the P in the PFCG}
+
+The analysis from before gave us a specific interpretation of the time flies sentence. Suppose we want to adjust the grammar so that we get a different (specific) interpretation. Open up \verb grammar.py  and take a look at the definition of \verb timeFliesPCFG  and the desired analysis, in desiredTimeFliesParse. 
+Create a new grammar called \verb timeFliesPCFG2  that gives the same parse as in \verb desiredTimeFliesParse . 
+
+Note: you may NOT change the rules of the grammar, and none of your probabilities may be less than 0.1 (and they must sum to one in the appropriate places). 
+You can compare your output to the desired tree with:
+\begin{verbatim}
+>>> myTree = parse(timeFliesPCFG, timeFliesSent)
+>>> print myTree
+(TOP:
+  (S:
+    (NP: (Noun: 'time'))
+    (VP:
+      (Verb: 'flies')
+      (PP: (Prep: 'like') (NP: (Det: 'an') (Noun: 'arrow'))))))
+
+>>> print desiredTimeFliesParse
+(TOP:
+  (S:
+    (VP:
+      (Verb: 'time')
+      (NP: (Noun: 'flies'))
+      (PP: (Prep: 'like') (NP: (Det: 'an') (Noun: 'arrow'))))))
+
+>>> evaluate(desiredTimeFliesParse, myTree)
+0.75
+\end{verbatim}
+This is the result using the grammar in the starter code. You should be able to get an evaluation (accuracy) of 1.0 after you modify the probability of the PCFGs.
+
+\section{Grammar writing}
+Your final task is to do a good job of parsing English by modifying the nonterminals in the trees from which we extract the PCFGs. 
+Open up \verb extractGrammar.py  and take a look at \verb computePCFG . 
+This will read data and compute a PCFG out of it. For instance:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.dev')
+>>> len(pcfg)
+650
+>>> print str(pcfg)
+...
+PP => VBG PP	| 1
+PP => TO NP	| 23
+PP => IN ADJP	| 1
+PP => IN_NP NP	| 2
+PP => TO S	| 1
+PP => VBN PP	| 3
+PP => IN SBAR	| 1
+PP => IN NP	| 139
+...
+\end{verbatim}
+This shows that there are 650 unique rules in this PCFG, and that the most frequent PP rules were "TO NP" (count of 23) and "IN NP" (count of 139). We can look at a larger data set:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.train')
+>>> len(pcfg)
+6048
+\end{verbatim}
+By default, this will learn a completely unlexicalized PCFG, which means that it can only parse POS sequences, as in the following two time-flies-esque examples:
+\begin{verbatim}
+>>> parse(pcfg, ['NN', 'VBZ', 'IN', 'DT', 'NN'])
+(TOP: (S: (NP: 'NN') (VP: 'VBZ' (PP: 'IN' (NP: 'DT' 'NN')))))
+
+>>> parse(pcfg, ['VBZ', 'NN', 'IN', 'DT', 'NN'])
+(TOP: (S: (VP: (_VBZ_NP: 'VBZ' (NP: 'NN')) (PP: 'IN' (NP: 'DT' 'NN')))))
+\end{verbatim}
+You'll notice that the tree that came out the second time is binarized. We can de-binarize it:
+\begin{verbatim}
+>>> print nonBinaryTree
+(TOP:
+  (S:
+    (NP:
+      (DT: 'the')
+      (RB: 'really')
+      (JJ: 'happy')
+      (NN: 'computer')
+      (NN: 'science')
+      (NN: 'student'))
+    (VP: (VBD: 'loves') (NP: (NNP: 'CL1')))
+    (.: '.')))
+
+>>> print binarizeTree(nonBinaryTree)
+(TOP:
+  (S:
+    (_NP_VP:
+      (NP:
+        (_DT_RB_JJ_NN_NN:
+          (_DT_RB_JJ_NN:
+            (_DT_RB_JJ:
+              (_DT_RB: (DT: 'the') (RB: 'really'))
+              (JJ: 'happy'))
+            (NN: 'computer'))
+          (NN: 'science'))
+        (NN: 'student'))
+      (VP: (VBD: 'loves') (NP: (NNP: 'CL1'))))
+    (.: '.')))
+
+>>> print debinarizeTree(binarizeTree(nonBinaryTree))
+(TOP:
+  (S:
+    (NP:
+      (DT: 'the')
+      (RB: 'really')
+      (JJ: 'happy')
+      (NN: 'computer')
+      (NN: 'science')
+      (NN: 'student'))
+    (VP: (VBD: 'loves') (NP: (NNP: 'CL1')))
+    (.: '.')))
+\end{verbatim}
+
+You'll note that this implementation of binarization does NO parent annotations (i.e., vertical order is 1) and complete markovization (i.e., horizontal order is infinity). 
+One very important thing is that the debinarization assumes that any rule that's been binarized starts with \verb _  . 
+So please maintain this invariant or debinarization won't work!
+You can evaluate this PCFG by loading parser.py and running:
+\begin{verbatim}
+>>> evaluateParser(pcfg, 'wsj.dev')
+\end{verbatim}
+
+You might notice this takes forever. So to make it faster, you can specify a pruning threshold. A pruning threshold of 0.1 means that once a cell is filled up, take the probability of the best item in it. Say that's probabiliy 0.23. Multiply it by 0.1 to get 0.023. Now, anything else in that cell whose probability is less than 0.023 will be deleted. This will make parsing faster at the expense of accuracy. You can pass this threshold to evaluateParser:
+\begin{verbatim}
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001)
+0.62969931444237581
+
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.001)
+0.49305803094859446
+
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.1)
+0.019573492787778504
+\end{verbatim}
+
+\subsection{Horizontal Markovization}
+Your first task is to implement horizontal Markovization (i.e., parent annotations) in the extractGrammar file. You should be able to test this with:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.train', horizSize=2)
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, horizSize=2)
+\end{verbatim}
+
+\subsection{Vertical Markovization}
+Your second task is to implement vertical annotation (i.e., ancestor annotations). Likewise, you can test this with:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.train', verticSize=2)
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, verticSize=2)
+\end{verbatim}
+
+\subsection{Grammar writing and splitting nonterminals}
+The final challenge is to make the best unlexicalized grammar that you can. First, y
+ou should try to get the best results of varying \verb horizSize  in the range \{1, 2, 3, 4\} and \verb verticSize  in \{1, 2, 3, 4\}. 
+
+You can also \verb runFancyCode=True  to \verb evaluateParser , which will pass this flag down to the \verb  binarizeTree function, and you can do whatever you want in there to try to get better performance. 
+Use your knowledge of syntax and linguistic intuition to modify the non-terminals of the trees in the treebank.
+Does it make sense to have a separate non-terminal for a finite verb vs non-finite verb? How about transitive verbs? How about "proper noun phrase"? Are all prepositions created equal?
+
+Submit \verb extractGrammar.py  and \verb grammar.py  . Also write a short on what you have tried and include a table that summarizes the performance of the parsers from each strategy you try and each combination of values of \verb horizSize  and \verb verticSize  .
+
+
+\end{document}
