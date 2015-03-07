@@ -183,9 +183,9 @@ ou should try to get the best results of varying \verb horizSize  in the range \
 
 You can also \verb runFancyCode=True  to \verb evaluateParser , which will pass this flag down to the \verb  binarizeTree function, and you can do whatever you want in there to try to get better performance. 
 Use your knowledge of syntax and linguistic intuition to modify the non-terminals of the trees in the treebank.
-Does it make sense to have a separate non-terminal for a finite verb vs non-finite verb? How about transitive verbs? How about "proper noun phrase"? Are all prepositions created equal?
+Does it make sense to have a separate non-terminal for a finite verb vs non-finite verb? How about transitive verbs? How about ``proper noun phrase"? Are all prepositions created equal? Does each different preposition deserve its own tag e.g ``from phrase"?
 
-Submit \verb extractGrammar.py  and \verb grammar.py  . Also write a short on what you have tried and include a table that summarizes the performance of the parsers from each strategy you try and each combination of values of \verb horizSize  and \verb verticSize  .
+Submit \verb extractGrammar.py  and \verb grammar.py  . Also write a short on what you have tried and include a table that summarizes $F_1$ score and the size of the grammars (the number of rules) resulting from each strategy you try and each combination of values of \verb horizSize  and \verb verticSize  .
 
 
 \end{document}
