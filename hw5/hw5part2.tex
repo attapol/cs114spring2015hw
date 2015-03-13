@@ -9,8 +9,6 @@
 \usepackage{hyperref}
 \usepackage{tabularx}
 
-%@modernhindi
-
 % \date{}
 \begin{document}
 
@@ -36,7 +34,9 @@ Your code will be autograded for technical correctness. Please do not change the
 \setcounter{section}{1}
 \section{Effects of the P in the PFCG}
 
-The analysis from before gave us a specific interpretation of the time flies sentence. Suppose we want to adjust the grammar so that we get a different (specific) interpretation. Open up \verb grammar.py  and take a look at the definition of \verb timeFliesPCFG  and the desired analysis, in desiredTimeFliesParse. 
+The analysis from before gave us a specific interpretation of the time flies sentence. Your task is to adjust the grammar so that we get a different (specific) interpretation. 
+
+Open up \verb grammar.py  and take a look at the definition of \verb timeFliesPCFG  and the desired analysis in \verb desiredTimeFliesParse . 
 Create a new grammar called \verb timeFliesPCFG2  that gives the same parse as in \verb desiredTimeFliesParse . 
 
 Note: you may NOT change the rules of the grammar, and none of your probabilities may be less than 0.1 (and they must sum to one in the appropriate places). 
@@ -64,8 +64,41 @@ You can compare your output to the desired tree with:
 \end{verbatim}
 This is the result using the grammar in the starter code. You should be able to get an evaluation (accuracy) of 1.0 after you modify the probability of the PCFGs.
 
-\section{Grammar writing}
-Your final task is to do a good job of parsing English by modifying the nonterminals in the trees from which we extract the PCFGs. 
+\section{Grammar writing or what I call "So you think you know syntax."}
+Your final task is to improve English parsing by modifying the nonterminals in the trees from which we extract the PCFGs. 
+We provide a demo to show how to use the provided code to extract and evaluate PCFGs.
+
+\subsection{Horizontal Markovization}
+Your first task is to implement horizontal Markovization (i.e., parent annotations) in the \verb extractGrammar  file. You should be able to test this with:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.train', horizSize=2)
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, horizSize=2)
+\end{verbatim}
+
+\subsection{Vertical Markovization}
+Your second task is to implement vertical annotation (i.e., ancestor annotations). Likewise, you can test this with:
+\begin{verbatim}
+>>> pcfg = computePCFG('wsj.train', verticSize=2)
+>>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, verticSize=2)
+\end{verbatim}
+
+\subsection{Grammar writing and splitting nonterminals}
+The final challenge is to make the best unlexicalized grammar that you can. First, you should try to get the best results of varying \verb horizSize  in the range \{1, 2, 3, 4\} and \verb verticSize  in \{1, 2, 3, 4\}. 
+
+Use your knowledge of syntax and linguistic intuition to modify or subcategorize the non-terminals of the trees in the treebank. Some thoughts and ideas:
+\begin{itemize}
+\item Does it make sense to have a separate non-terminal for a finite verb vs non-finite verb? How about transitive verbs? 
+\item How about ``proper noun phrase"? Should it behave different from a noun phrase? What are other subcategories of noun that we can easily annotate. 
+\item Are all prepositions created equal? Does each different preposition deserve its own tag e.g ``from phrase"? (It is OK to ``lexicalize" words that are from a closed class such as preposition or determiner. But you are not allowed to explicitly lexicalize nouns.) 
+\item 1988 and 10,500 are both tagged as CD. But they really appear at very different places. Any other subcategories of CD?
+
+\end{itemize}
+To evaluate your grammar, you can also \verb runFancyCode=True  to \verb evaluateParser , which will pass this flag down to the \verb binarizeTree function, and you can do whatever you want in there to try to get better performance except lexicalizing the grammar for words from open classes e.g. verbs, nouns. 
+
+
+Submit \verb extractGrammar.py  and \verb grammar.py . Also write a short report on what you have tried and give a reason why it is a sensible idea to try. Include a table that summarizes $F_1$ score and the size of the grammars (the number of rules) resulting from each strategy you try and each combination of values of \verb horizSize  and \verb verticSize  .
+
+\section*{Grammar extraction and evaluation demo} 
 Open up \verb extractGrammar.py  and take a look at \verb computePCFG . 
 This will read data and compute a PCFG out of it. For instance:
 \begin{verbatim}
@@ -162,30 +195,5 @@ You might notice this takes forever. So to make it faster, you can specify a pru
 >>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.1)
 0.019573492787778504
 \end{verbatim}
-
-\subsection{Horizontal Markovization}
-Your first task is to implement horizontal Markovization (i.e., parent annotations) in the extractGrammar file. You should be able to test this with:
-\begin{verbatim}
->>> pcfg = computePCFG('wsj.train', horizSize=2)
->>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, horizSize=2)
-\end{verbatim}
-
-\subsection{Vertical Markovization}
-Your second task is to implement vertical annotation (i.e., ancestor annotations). Likewise, you can test this with:
-\begin{verbatim}
->>> pcfg = computePCFG('wsj.train', verticSize=2)
->>> evaluateParser(pcfg, 'wsj.dev', pruningPercent=0.00001, verticSize=2)
-\end{verbatim}
-
-\subsection{Grammar writing and splitting nonterminals}
-The final challenge is to make the best unlexicalized grammar that you can. First, y
-ou should try to get the best results of varying \verb horizSize  in the range \{1, 2, 3, 4\} and \verb verticSize  in \{1, 2, 3, 4\}. 
-
-You can also \verb runFancyCode=True  to \verb evaluateParser , which will pass this flag down to the \verb  binarizeTree function, and you can do whatever you want in there to try to get better performance. 
-Use your knowledge of syntax and linguistic intuition to modify the non-terminals of the trees in the treebank.
-Does it make sense to have a separate non-terminal for a finite verb vs non-finite verb? How about transitive verbs? How about ``proper noun phrase"? Are all prepositions created equal? Does each different preposition deserve its own tag e.g ``from phrase"?
-
-Submit \verb extractGrammar.py  and \verb grammar.py  . Also write a short on what you have tried and include a table that summarizes $F_1$ score and the size of the grammars (the number of rules) resulting from each strategy you try and each combination of values of \verb horizSize  and \verb verticSize  .
-
 
 \end{document}
