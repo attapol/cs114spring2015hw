@@ -41,10 +41,8 @@ Files you might want to look at:
 
 Your code will be autograded for technical correctness. Please do not change the names of any provided functions or classes within the code, or you will wreak havoc on the autograder. 
 
-When you are done, submit your solution from 1.1 and your version of \verb parser.py  . 
-
 \section{Probabilistic CKY algorithm}
-If you think you already understand CKY, do 1.2 first and then use your code to do 1.1. 
+For this problem, we are running the CKY algorithm by hand in 1.1 and implementing it in 1.2. If you think you already understand CKY, do 1.2 first and then use your code to do 1.1. 
 If you are still shaky, do 1.1 first and 1.2 will be quite straightforward.
 
 \subsection{By hand}
@@ -96,10 +94,9 @@ Then apply all of those rules to generate bigger subtrees.
 \end{enumerate}
 
 \subsection{By machine}
-Open up \verb parser.py  . 
-We have given you an almost-complete implementation of CKY. 
-It initializes the bottom cells of the chart, then applies unary rules there, and applies binary rules in the entire chart. (Hint: the solution only needs around 7 lines of code)
-All you have to do is apply unary rules in the recursive case. If you've correctly implemented this, and loaded all the relevant files, you should be able to run:
+We have given you an almost-complete implementation of CKY in \verb parser.py . 
+You only have to fill in a blank. 
+The provided implementation initializes the bottom cells of the chart, then applies unary rules there, and applies binary rules in the entire chart. All is left for you to do is apply unary rules in the recursive case, but that requires you to understand the whole algorithm and the data structures involved. (Hint: the solution only needs around 7 lines of code, so it is not crazy.) If you've correctly implemented this, and loaded all the relevant files, you should be able to run:
 
 \begin{verbatim}
 >>> print timeFliesSent
@@ -112,4 +109,10 @@ All you have to do is apply unary rules in the recursive case. If you've correct
 \end{verbatim}
 
 Note that you cannot get this output without correctly handling unary rules, because you'll never be able to get the {\verb TOP \verb => \verb S  at the top.
+
+
+\section*{Submisssion}
+Submit your solution from 1.1 and your version of \verb parser.py  on Latte. If you draw trees by hand for 1.1, scan the solutions and convert into pdf. 
+Remember late submission is only accepted for 1.1 because we will give you the solution for 1.2 for you to use in Homework 5 part two.  
+
 \end{document}
