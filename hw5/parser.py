@@ -146,14 +146,7 @@ def cky(pcfg, sent, pruningPercent=None):
 
             # try unary rules
             ### TODO: YOUR CODE HERE
-            items = []
-            for rhs in chart.iter_cell(i, k):
-                for lhs, ruleProb in pcfg.iter_unary_rules_on_rhs(rhs.label):
-                    item = Item(i, k, lhs, rhs.logProb + log(ruleProb), rhs)
-                    items.append(item)
-            for item in items:
-                chart.add(item)
-            #util.raiseNotDefined()
+            util.raiseNotDefined()
 
             # prune the cell
             chart.prune_cell(i, k)
