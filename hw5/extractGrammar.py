@@ -136,7 +136,7 @@ def iterateTaggedSentences(filename):
         yield (words, tags)
 
 def computePCFG(filename, horizSize=None, verticSize=1):
-    pcfg = PCFG()
+    pcfg = PCFG({})
     
     # iterate over all the trees in the treebank
     for tree in iterateTreebank(filename, horizSize=horizSize, verticSize=verticSize):
