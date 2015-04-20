@@ -117,7 +117,7 @@ public class IBMModel1 {
 	
 	
 	public static void main(String[] argv) throws IOException{
-		IBMModel1_key model = new IBMModel1_key();
+		IBMModel1 model = new IBMModel1();
 		model.train(Util.readCorpus("english.txt"), Util.readCorpus("german.txt"), 10);
 	}
 }
